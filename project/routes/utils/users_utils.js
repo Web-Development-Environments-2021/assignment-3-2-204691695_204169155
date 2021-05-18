@@ -1,4 +1,5 @@
 const DButils = require("./DButils");
+const axios = require("axios");
 
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
@@ -13,5 +14,11 @@ async function getFavoritePlayers(user_id) {
   return player_ids;
 }
 
+async function getCountries(){
+  const result = await axios.get('https://restcountries.eu/rest/v2/all`');
+  return result;
+}
+
 exports.markPlayerAsFavorite = markPlayerAsFavorite;
 exports.getFavoritePlayers = getFavoritePlayers;
+exports.getCountries = getCountries;
