@@ -51,5 +51,20 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
+// ours
+
+async function getPlayersByName(player_name) {
+  const result = 
+    await axios.get(`${api_domain}/players/search/${player_name}`, {
+      params: {
+        api_token: process.env.api_token,
+      },
+    })
+  console.log("inside");
+  return result;
+}
+
+
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
+exports.getPlayersByName = getPlayersByName;
