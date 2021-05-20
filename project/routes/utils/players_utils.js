@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { markPlayerAsFavorite } = require("./users_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 // const TEAM_ID = "85";
 
@@ -54,16 +55,31 @@ async function getPlayersByTeam(team_id) {
 // ours
 
 async function getPlayersByName(player_name) {
-  const result = 
+  let players = 
     await axios.get(`${api_domain}/players/search/${player_name}`, {
       params: {
         api_token: process.env.api_token,
+        include: "team",
       },
     })
-  console.log("inside");
-  return result;
+  return extractRelevantPlayerDataByName(players)
 }
 
+function extractRelevantPlayerDataByName(players) {
+  return players.data.data.map((player_info) => {
+    const { fullname, image_path, position_id } = player_info;
+    
+    // TODO: ask if player without team should be return
+    if(player_info.team){
+      return {
+        name: fullname,
+        image: image_path,
+        position: position_id,
+        team_name: player_info.team.data.name
+      }; 
+    }  
+  });
+}
 
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
