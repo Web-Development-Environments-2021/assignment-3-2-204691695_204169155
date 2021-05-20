@@ -2,10 +2,10 @@ require("dotenv").config();
 const sql = require("mssql");
 
 const config = {
-  user: process.env.tedious_userName,
-  password: process.env.tedious_password,
-  server: process.env.tedious_server,
-  database: process.env.tedious_database,
+  user: process.env.azure_userName,
+  password: process.env.azure_password,
+  server: process.env.azure_server_name,
+  database: process.env.azure_DB_name,
   options: {
     encrypt: true,
     enableArithAbort: true

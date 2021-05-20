@@ -1,16 +1,26 @@
 var express = require("express");
 var router = express.Router();
 const DButils = require("../routes/utils/DButils");
+const utils= require("../routes/utils/users_utils");
 const bcrypt = require("bcryptjs");
+
+router.post("/Register2", async (req, res, next) => {
+  try {
+    console.log(req.body.username);
+    res.status(201).send(req.body.username);
+  } catch (error) {
+   console.log("erroe");
+  }
+});
 
 router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
     // valid parameters
     // username exists
-    const users = await DButils.execQuery(
-      "SELECT username FROM dbo.users_tirgul"
-    );
+    console.log(req.body.username);
+    //let countries= await utils.getCountries();
+    const users = await DButils.execQuery("SELECT username FROM dbo.users_test");
 
     if (users.find((x) => x.username === req.body.username))
       throw { status: 409, message: "Username taken" };
@@ -24,7 +34,7 @@ router.post("/Register", async (req, res, next) => {
 
     // add the new username
     await DButils.execQuery(
-      `INSERT INTO dbo.users_tirgul (username, password) VALUES ('${req.body.username}', '${hash_password}')`
+      `INSERT INTO dbo.users_test (username, password) VALUES ('${req.body.username}', '${hash_password}')`
     );
     res.status(201).send("user created");
   } catch (error) {
@@ -34,11 +44,9 @@ router.post("/Register", async (req, res, next) => {
 
 router.post("/Login", async (req, res, next) => {
   try {
-    const user = (
-      await DButils.execQuery(
-        `SELECT * FROM dbo.users_tirgul WHERE username = '${req.body.username}'`
-      )
-    )[0];
+    // check that username exists
+    const user = (await DButils.execQuery(`SELECT * FROM dbo.users WHERE username = '${req.body.username}'`))[0];
+
     // user = user[0];
     console.log(user);
 

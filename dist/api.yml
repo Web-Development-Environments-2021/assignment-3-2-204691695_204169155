@@ -1,5 +1,6 @@
 openapi: 3.0.0
 info:
+ # when we paste our API we neeed to remove the server section  
   title: api
   description: API for  project
   version: 1.0.0
