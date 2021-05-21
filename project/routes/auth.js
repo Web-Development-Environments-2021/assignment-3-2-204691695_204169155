@@ -18,8 +18,8 @@ router.post("/Register", async (req, res, next) => {
     // parameters exists
     // valid parameters
     // username exists
-    console.log(req.body.username);
-    //let countries= await utils.getCountries();
+    // let countries= await utils.getCountries();
+
     const users = await DButils.execQuery("SELECT username FROM dbo.users_test");
 
     if (users.find((x) => x.username === req.body.username))
@@ -45,7 +45,7 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
-    const user = (await DButils.execQuery(`SELECT * FROM dbo.users WHERE username = '${req.body.username}'`))[0];
+    const user = (await DButils.execQuery(`SELECT * FROM dbo.users_test WHERE username = '${req.body.username}'`))[0];
 
     // user = user[0];
     console.log(user);

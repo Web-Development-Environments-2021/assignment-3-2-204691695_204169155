@@ -15,7 +15,7 @@ async function getFavoritePlayers(user_id) {
 }
 
 async function getCountries(){
-  const result = await axios.get('https://restcountries.eu/rest/v2/all`');
+  const result = await axios.get('https://restcountries.eu/rest/v2/all');
   return result;
 }
 
