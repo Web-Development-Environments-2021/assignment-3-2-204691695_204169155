@@ -55,23 +55,27 @@ async function getPlayersByTeam(team_id) {
 // ours
 
 async function getPlayersByName(player_name) {
-  let players = 
+  let promises = [];
+  promises.push(
     await axios.get(`${api_domain}/players/search/${player_name}`, {
       params: {
         api_token: process.env.api_token,
         include: "team",
       },
     })
-  return extractRelevantPlayerDataByName(players)
+  )
+  let players_info = await Promise.all(promises);
+  return extractRelevantPlayerDataByName(players_info)
 }
 
 function extractRelevantPlayerDataByName(players) {
-  return players.data.data.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info;
+  return players[0].data.data.map((player_info) => {
+    const { player_id, fullname, image_path, position_id } = player_info;
     
     // TODO: ask if player without team should be return
-    if(player_info.team){
+    if(player_info && player_info.team){
       return {
+        player_id: player_id,
         name: fullname,
         image: image_path,
         position: position_id,
@@ -81,6 +85,44 @@ function extractRelevantPlayerDataByName(players) {
   });
 }
 
+
+async function getPlayerPersonalPageByID(player_id){
+  let promises = [];
+  promises.push(
+    await axios.get(`${api_domain}/players/${player_id}`, {
+      params: {
+        api_token: process.env.api_token,
+        include: "team",
+      },
+    })
+  )
+  let players_info = await Promise.all(promises);
+  return extractRelevantPlayerPageDataByID(players_info)
+}
+
+function extractRelevantPlayerPageDataByID(players) {
+  const player_info = players[0].data.data;
+  const {player_id ,fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight,  } = player_info;
+  
+  // TODO: ask if player without team should be return
+  if(player_info && player_info.team){
+    return {
+      player_id: player_id,
+      name: fullname,
+      image: image_path,
+      position: position_id,
+      team_name: player_info.team.data.name,
+      common_name: common_name,
+      nationality: nationality,
+      birthdate: birthdate,
+      birthcountry: birthcountry, 
+      height: height,
+      weight: weight,
+    }; 
+  }  
+}
+
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayersByName = getPlayersByName;
+exports.getPlayerPersonalPageByID = getPlayerPersonalPageByID;

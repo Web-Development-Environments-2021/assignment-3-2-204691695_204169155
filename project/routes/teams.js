@@ -2,14 +2,23 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
+const games_utils = require("./utils/games_utils");
 
-router.get("/teamFullDetails/:teamId", async (req, res, next) => {
-  let team_details = [];
+router.get("/page/:teamId", async (req, res, next) => {
+  let team_details = {};
   try {
-    const team_details = await players_utils.getPlayersByTeam(
+    // team_details["players"] = await players_utils.getPlayersByTeam(
+    //   req.params.teamId
+    // );
+    
+    // team_details["past_games"] = await games_utils.getPastGamesByTeam(
+    //   req.params.teamId
+    // );
+
+    team_details["future_games"] = await games_utils.getFutureGames(
       req.params.teamId
     );
-    //we should keep implementing team page.....
+
     res.send(team_details);
   } catch (error) {
     next(error);
