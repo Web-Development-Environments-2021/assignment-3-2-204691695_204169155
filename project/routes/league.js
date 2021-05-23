@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const league_utils = require("./utils/league_utils");
+const DBUtils = require("./utils/DButils");
 
 router.get("/getDetails", async (req, res, next) => {
   try {
@@ -10,5 +11,6 @@ router.get("/getDetails", async (req, res, next) => {
     next(error);
   }
 });
+
 
 module.exports = router;
