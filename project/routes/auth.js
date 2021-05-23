@@ -36,6 +36,7 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
+    console.log(req.body.username + " : " + req.body.password);
     const user = (await DButils.execQuery(`SELECT * FROM dbo.users_test WHERE username = '${req.body.username}'`))[0];
 
     // user = user[0];
