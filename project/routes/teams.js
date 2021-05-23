@@ -7,19 +7,30 @@ const games_utils = require("./utils/games_utils");
 router.get("/page/:teamId", async (req, res, next) => {
   let team_details = {};
   try {
-    // team_details["players"] = await players_utils.getPlayersByTeam(
-    //   req.params.teamId
-    // );
+    team_details["players"] = await players_utils.getPlayersByTeam(
+      req.params.teamId
+    );
     
-    // team_details["past_games"] = await games_utils.getPastGamesByTeam(
-    //   req.params.teamId
-    // );
+    team_details["past_games"] = await games_utils.getPastGames(
+       req.params.teamId
+    );
 
     team_details["future_games"] = await games_utils.getFutureGames(
       req.params.teamId
     );
 
     res.send(team_details);
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/:TeamName", async (req, res, next) => {
+  let players_details = [];
+  try {
+    const Team_details = await players_utils.getTeamByName(
+      req.params.TeamName
+    );
+    res.status(201).send(Team_details);
   } catch (error) {
     next(error);
   }

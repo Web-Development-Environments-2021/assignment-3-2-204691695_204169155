@@ -56,6 +56,7 @@ const search = require("./routes/search");
 
 //#endregion
 
+
 //#region cookie middleware
 app.use(function (req, res, next) {
   if (req.session && req.session.user_id) {
@@ -86,8 +87,10 @@ app.use(auth);
 
 // Default Router
 app.use((req,res) =>{
+  console.log("default router");
   res.sendStatus(404);
 });
+
 //Catch all errors
 app.use(function (err, req, res, next) {
   console.error(err);
