@@ -35,9 +35,10 @@ async function getPlayersInfo(players_ids_list) {
 
 function extractRelevantPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info.data.data;
+    const { player_id, fullname, image_path, position_id } = player_info.data.data;
     const { name } = player_info.data.data.team.data;
     return {
+      player_id: player_id,
       name: fullname,
       image: image_path,
       position: position_id,
@@ -52,26 +53,30 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
-// ours ------------------
+// ours
 
-// Get Player by Name
 async function getPlayersByName(player_name) {
-  let players = 
+  let promises = [];
+  promises.push(
     await axios.get(`${api_domain}/players/search/${player_name}`, {
       params: {
         api_token: process.env.api_token,
         include: "team",
       },
     })
-  return extractRelevantPlayerDataByName(players)
+  )
+  let players_info = await Promise.all(promises);
+  return extractRelevantPlayerDataByName(players_info)
 }
 
 function extractRelevantPlayerDataByName(players) {
-  return players.data.data.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info;
+  return players[0].data.data.map((player_info) => {
+    const { player_id, fullname, image_path, position_id } = player_info;
+    
     // TODO: ask if player without team should be return
-    if(player_info.team){
+    if(player_info && player_info.team){
       return {
+        player_id: player_id,
         name: fullname,
         image: image_path,
         position: position_id,
@@ -81,30 +86,44 @@ function extractRelevantPlayerDataByName(players) {
   });
 }
 
-// Get Team by Name
-async function getTeamByName(team_name) {
-  let teams = 
-    await axios.get(`${api_domain}/teams/search/${team_name}`, {
+
+async function getPlayerPersonalPageByID(player_id){
+  let promises = [];
+  promises.push(
+    await axios.get(`${api_domain}/players/${player_id}`, {
       params: {
         api_token: process.env.api_token,
+        include: "team",
       },
     })
-  return extractRelevantTeamDataByName(teams)
-}
-function extractRelevantTeamDataByName(teams) {
-  return teams.data.data.map((team_info) => {
-    const { name, logo_path } = team_info;
-    if(team_info){
-      return {
-        name: name,
-        logo: logo_path,
-      }; 
-    }  
-  });
+  )
+  let players_info = await Promise.all(promises);
+  return extractRelevantPlayerPageDataByID(players_info)
 }
 
+function extractRelevantPlayerPageDataByID(players) {
+  const player_info = players[0].data.data;
+  const {player_id ,fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight,  } = player_info;
+  
+  // TODO: ask if player without team should be return
+  if(player_info && player_info.team){
+    return {
+      player_id: player_id,
+      name: fullname,
+      image: image_path,
+      position: position_id,
+      team_name: player_info.team.data.name,
+      common_name: common_name,
+      nationality: nationality,
+      birthdate: birthdate,
+      birthcountry: birthcountry, 
+      height: height,
+      weight: weight,
+    }; 
+  }  
+}
 
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayersByName = getPlayersByName;
-exports.getTeamByName = getTeamByName;
+exports.getPlayerPersonalPageByID = getPlayerPersonalPageByID;

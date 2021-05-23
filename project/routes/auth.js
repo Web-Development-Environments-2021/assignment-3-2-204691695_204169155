@@ -4,23 +4,14 @@ const DButils = require("../routes/utils/DButils");
 const utils= require("../routes/utils/users_utils");
 const bcrypt = require("bcryptjs");
 
-router.post("/Register2", async (req, res, next) => {
-  try {
-    console.log(req.body.username);
-    res.status(201).send(req.body.username);
-  } catch (error) {
-   console.log("erroe");
-  }
-});
-
 router.post("/Register", async (req, res, next) => {
   try {
     // parameters exists
     // valid parameters
     // username exists
-    // let countries= await utils.getCountries();
-
-    const users = await DButils.execQuery("SELECT username FROM dbo.users_test");
+    console.log(req.body.username);
+    let countries= await utils.getCountries();
+    const users = await DButils.execQuery("SELECT username FROM dbo.users_test");    
 
     if (users.find((x) => x.username === req.body.username))
       throw { status: 409, message: "Username taken" };
