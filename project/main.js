@@ -53,6 +53,7 @@ const league = require("./routes/league");
 const teams = require("./routes/teams");
 const players = require("./routes/players");
 const search = require("./routes/search");
+const FAR = require("./routes/FAR");
 
 //#endregion
 
@@ -83,6 +84,7 @@ app.use("/league", league);
 app.use("/teams", teams);
 app.use("/players", players);
 app.use("/search", search);
+app.use("/FAR", FAR)
 app.use(auth);
 
 // Default Router
