@@ -88,5 +88,10 @@ async function getPastGames(team_id) {
   return past_games_info;
 }
 
+// -------- insert games ------------
+async function insertGame(date,hour,homeTeam,visitorTeam,stadium){
+  
+}
+
 exports.getPastGames = getPastGames;
 exports.getFutureGames = getFutureGames;
