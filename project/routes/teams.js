@@ -21,7 +21,7 @@ router.get("/page/:teamId", async (req, res, next) => {
 
     res.send(team_details);
   } catch (error) {
-    next(error);
+    next({status: 403, message: "team_id doesn't exists"});
   }
 });
 

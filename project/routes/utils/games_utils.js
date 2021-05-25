@@ -108,7 +108,6 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
   catch(e){
     throw e;
   }
-
 }
 
 async function getGamesInfo(games_ids_array) {
@@ -121,13 +120,15 @@ async function getGamesInfo(games_ids_array) {
       `SELECT * FROM dbo.Games WHERE game_id = '${id}' `
     )
     if (game[0].game_timestamp < timestamp){
-      console.log("in") ;
        await DButils.execQuery(`DELETE FROM dbo.FavoriteGames WHERE game_id = '${id}' `)
     }
     else
       favorite_game_info.push(game[0]);
 
   }));
+  favorite_game_info.sort(function(first, second) {
+    return first.game_timestamp - second.game_timestamp;
+  });
   return favorite_game_info;
 }
 

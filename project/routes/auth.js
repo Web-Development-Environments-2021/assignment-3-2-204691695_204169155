@@ -9,11 +9,10 @@ router.post("/Register", async (req, res, next) => {
     // parameters exists
     // valid parameters
     // username exists
-    console.log(req.body.username);
-    let countries= await utils.getCountries();
+    //let countries= await utils.getCountries();
     const users = await DButils.execQuery("SELECT username FROM dbo.users_test");    
 
-    if (users.find((x) => x.username === req.body.username))
+    if (req.body.username && users.find((x) => x.username === req.body.username))
       throw { status: 409, message: "Username taken" };
 
     //hash the password
@@ -36,11 +35,7 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
-    console.log(req.body.username + " : " + req.body.password);
     const user = (await DButils.execQuery(`SELECT * FROM dbo.users_test WHERE username = '${req.body.username}'`))[0];
-
-    // user = user[0];
-    console.log(user);
 
     // check that username exists & the password is correct
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {

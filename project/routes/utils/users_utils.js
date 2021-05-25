@@ -27,7 +27,6 @@ async function markGameAsFavorite(user_id, game_id) {
       }
     }
     else{
-      console.log("2");
       throw {status: 400 , message: "Game date must be in the future"};
     }    
   } catch(err){
