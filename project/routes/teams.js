@@ -24,6 +24,7 @@ router.get("/page/:teamId", async (req, res, next) => {
     next(error);
   }
 });
+
 router.get("/:TeamName", async (req, res, next) => {
   let players_details = [];
   try {

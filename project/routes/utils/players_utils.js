@@ -53,9 +53,7 @@ async function getPlayersByTeam(team_id) {
   return players_info;
 }
 
-// ours
-
-async function getPlayersByName(player_name) {
+async function getPlayersByName(player_name, player_pos, group_name) {
   let promises = [];
   promises.push(
     await axios.get(`${api_domain}/players/search/${player_name}`, {
@@ -66,15 +64,24 @@ async function getPlayersByName(player_name) {
     })
   )
   let players_info = await Promise.all(promises);
-  return extractRelevantPlayerDataByName(players_info)
+  return extractRelevantPlayerDataByName(players_info, player_pos, group_name)
 }
 
-function extractRelevantPlayerDataByName(players) {
-  return players[0].data.data.map((player_info) => {
+function extractRelevantPlayerDataByName(players, player_pos, group_name) {
+  let players_data = players[0].data.data;
+  
+  // Filter by player's position
+  if(player_pos != "")
+    players_data = players_data.filter((player_info) => player_info.position_id == player_pos)
+
+  // Filter by group's name
+  if(group_name != "")
+    players_data = players_data.filter((player_info) => player_info.team && player_info.team.data.name === group_name)
+  
+  // Extract relevant data 
+  return players_data.map((player_info) => {
     const { player_id, fullname, image_path, position_id } = player_info;
-    
-    // TODO: ask if player without team should be return
-    if(player_info && player_info.team){
+        if(player_info && player_info.team){
       return {
         player_id: player_id,
         name: fullname,

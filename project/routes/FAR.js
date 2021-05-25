@@ -1,8 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const DButils = require("./utils/DButils");
-const users_utils = require("./utils/users_utils");
-const players_utils = require("./utils/players_utils");
+const game_utils = require("./utils/games_utils");
+const far_utils = require("./utils/far_utils");
 
 /**
  * Authenticate all incoming requests by middleware
@@ -22,32 +22,52 @@ router.use(async function (req, res, next) {
   }
 });
 
+/**
+ * FAR Page information 
+ */
 router.get("/", async (req, res, next) => {
     try {
-      
+        const far_page_details = await far_utils.getFarPageDetails();
+        res.send(far_page_details);
     } catch (error) {
       next(error);
     }
 });
+
+
+/**
+ *  Adding new game to the system
+ */
 router.post("/addNewGame", async (req, res, next) => {
     try {
-        
-    
+        const auth_game = await game_utils.checkAndInsertGame(req.body.homeTeam, req.body.visitorTeam, req.body.date, req.body.hour, req.body.referee, req.body.stadium);
+        if(auth_game){
+            res.status(201).send("Game added")
+        }
+        else { throw {
+            status: 401,
+            message: "Failed to insert game",
+        }
+      }
     } catch (error) {
       next(error);
     }
 });
-router.post("/addScore", async (req, res, next) => {
-    try {
+
+module.exports = router
+
+// ------------------- בונוס ----------------------
+// router.post("/addScore", async (req, res, next) => {
+//     try {
       
-    } catch (error) {
-      next(error);
-    }
-});
-router.post("/addLogEvent", async (req, res, next) => {
-    try {
+//     } catch (error) {
+//       next(error);
+//     }
+// });
+// router.post("/addLogEvent", async (req, res, next) => {
+//     try {
       
-    } catch (error) {
-      next(error);
-    }
-});
+//     } catch (error) {
+//       next(error);
+//     }
+// });
