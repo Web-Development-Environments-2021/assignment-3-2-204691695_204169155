@@ -2,7 +2,10 @@ const axios = require("axios");
 const DButils = require("./DButils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
-// ---------------- Future Games----------------------------
+// ----------------------------- Future Games --------------------------------
+/**
+ * This function return All future games
+ */
 async function getAllFutureGames(){
   // Next games
   const currentDate = new Date();
@@ -16,27 +19,37 @@ async function getAllFutureGames(){
   return future_games
 }
 
+/**
+ * This function return the future games by given team id
+ */
 async function getFutureGamesByTeam(team_id){
-  // Next games
   const currentDate = new Date();
   const timestamp = currentDate.getTime();   
   const future_games = await DButils.execQuery(
     `SELECT * FROM dbo.Games WHERE (homeTeam_id = '${team_id}' OR visitorTeam_id = '${team_id}') AND game_timestamp >= '${timestamp}' `
   );
+
+  // sorting the games by date (increasing)
   future_games.sort(function(first, second) {
     return first.game_timestamp - second.game_timestamp;
   });
   return future_games
 }
 
+/**
+ * This function return the future games by given team id
+ */
 async function getFutureGames(team_id) {
   let future_games_info = await getFutureGamesByTeam(team_id);
   return future_games_info;
 }
 
-// ---------------- Past Games----------------------------
+
+// ----------------------------- Past Games --------------------------------
+/**
+ * This function get all the past games
+ */
 async function getAllPastGames(){
-  // Next games
   const currentDate = new Date();
   const timestamp = currentDate.getTime();   
   const past_games = await DButils.execQuery(
@@ -48,33 +61,42 @@ async function getAllPastGames(){
   return past_games
 }
 
+/**
+ * This function get the past games by team_id
+ */
 async function getPastGamesByTeam(team_id){
-  // Next game
   const currentDate = new Date();
   const timestamp = currentDate.getTime();   
   const past_games = await DButils.execQuery(
     `SELECT * FROM dbo.Games WHERE (homeTeam_id = '${team_id}' OR visitorTeam_id = '${team_id}') AND game_timestamp < '${timestamp}' `
   );
+
+  // sorting the game by date (increasing)
   past_games.sort(function(first, second) {
     return first.game_timestamp - second.game_timestamp;
   });
   return past_games
 }
 
+/**
+ * This function get the past games by team_id
+ */
 async function getPastGames(team_id) {
   let past_games_info = await getPastGamesByTeam(team_id);
   return past_games_info;
 }
 
-// ---------------- Insert Games----------------------------
+// ----------------------------- Insert Game --------------------------------
+/**
+ * This function try to insert a new game to the system (validate parameters and availabilty first).
+ */
 async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, stadium){
   const same_date_games = await DButils.execQuery(
     `SELECT * FROM dbo.Games WHERE game_date='${date}' and game_hour='${hour}'`
   );
   
-  // check validation of the insert game (stadium empty and teams available)
-  var BreakException = {};
   try{
+    // check validation of the insert game (stadium empty and teams available)
     same_date_games.forEach(game => {
       console.log("in");
       if(game.stadium == stadium)
@@ -82,12 +104,7 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
           status: 401,
           message: "Stadium is occupied",
         }
-      if(game.homeTeam_id == homeTeam || game.homeTeam_id == visitorTeam)
-        throw {
-          status: 401,
-          message: "One or more of the teams is already playing at this hour",
-        }
-      if (game.visitorTeam_id == homeTeam || game.visitorTeam_id == visitorTeam)
+      if(game.homeTeam_id == homeTeam || game.homeTeam_id == visitorTeam || game.visitorTeam_id == homeTeam || game.visitorTeam_id == visitorTeam)
         throw {
           status: 401,
           message: "One or more of the teams is already playing at this hour",
@@ -98,6 +115,8 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
           message: "Referee is occupied",
         }
     });
+
+    // Inserting the game
     const time_stamp = new Date(date+"T"+hour).getTime();
     const db_a = await DButils.execQuery(
       `INSERT INTO dbo.Games (homeTeam_id, visitorTeam_id, game_date, game_hour, game_timestamp, referee, stadium) 
@@ -110,6 +129,9 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
   }
 }
 
+/**
+ * This function get the games info by a given games_ids array
+ */
 async function getGamesInfo(games_ids_array) {
   const currentDate = new Date();
   const timestamp = currentDate.getTime();   
@@ -119,6 +141,8 @@ async function getGamesInfo(games_ids_array) {
     const game = await DButils.execQuery(
       `SELECT * FROM dbo.Games WHERE game_id = '${id}' `
     )
+    
+    // deleting past games from favorite
     if (game[0].game_timestamp < timestamp){
        await DButils.execQuery(`DELETE FROM dbo.FavoriteGames WHERE game_id = '${id}' `)
     }
@@ -126,6 +150,8 @@ async function getGamesInfo(games_ids_array) {
       favorite_game_info.push(game[0]);
 
   }));
+
+  // sorting the games by date (increasing)
   favorite_game_info.sort(function(first, second) {
     return first.game_timestamp - second.game_timestamp;
   });

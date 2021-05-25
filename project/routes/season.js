@@ -1,8 +1,10 @@
 var express = require("express");
 var router = express.Router();
-const DButils = require("./utils/DButils");
 const games_utils = require("./utils/games_utils");
 
+/**
+ * This endpoint return the games in the system (seperated by past/future games).
+ */
 router.get("/", async (req, res, next) => {
   let current_season_games_details = {};
   try {

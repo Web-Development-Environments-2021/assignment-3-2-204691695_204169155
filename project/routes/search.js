@@ -1,19 +1,24 @@
 var express = require("express");
 var router = express.Router();
-const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 const team_utils = require("./utils/team_utils");
 
+/**
+ * This endpoint search and return a player by a given playerName (is possible to insert playerPosition or teamName to filter the results).
+ */
 router.get("/players", async (req, res, next) => {
   try {
+    // define dedault position and teamName
     const p_position = req.query.playerPosition || "";
-    const g_name = req.query.groupName || "";
+    const t_name = req.query.teanName || "";
     
     if(req.query.playerName){
+      // search the player by the params
       const players_details = await players_utils.getPlayersByName(
-        req.query.playerName, p_position , g_name
+        req.query.playerName, p_position , t_name
       );
-      //saving last query to session
+      
+      // Saving logged-in user last query to session      
       req.session.lastQuery = req.query;
       req.session.lastQuery['type'] = "player";
       res.status(201).send(players_details);
@@ -26,12 +31,18 @@ router.get("/players", async (req, res, next) => {
   }
 });
 
+/**
+ * This endpoint search and return a player by a given playerName (is possible to insert playerPosition or teamName to filter the results).
+ */
 router.get("/teams/:teamName", async (req, res, next) => {
   try {
+    
+    // search the team by the name
     const team_details = await team_utils.getTeamByName(
       req.params.teamName
     );
-    //saving last query to session
+    
+    // Saving logged-in user last query to session
     req.session.lastQuery = req.params;
     req.session.lastQuery['type'] = "team";
     res.status(201).send(team_details);

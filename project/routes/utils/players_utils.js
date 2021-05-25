@@ -1,8 +1,9 @@
 const axios = require("axios");
-const { markPlayerAsFavorite } = require("./users_utils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-// const TEAM_ID = "85";
 
+/**
+ * This function return a list of players_ids that belongs to a given team_id
+ */
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
   const team = await axios.get(`${api_domain}/teams/${team_id}`, {
@@ -17,6 +18,9 @@ async function getPlayerIdsByTeam(team_id) {
   return player_ids_list;
 }
 
+/**
+ * This function return a players_dict by given a players_ids list
+ */
 async function getPlayersInfo(players_ids_list) {
   let promises = [];
   players_ids_list.map((id) =>
@@ -33,6 +37,9 @@ async function getPlayersInfo(players_ids_list) {
   return extractRelevantPlayerData(players_info);
 }
 
+/**
+ * This function extract the relevant data for a player, given a players_info
+ */
 function extractRelevantPlayerData(players_info) {
   return players_info.map((player_info) => {
     const { player_id, fullname, image_path, position_id } = player_info.data.data;
@@ -47,12 +54,18 @@ function extractRelevantPlayerData(players_info) {
   });
 }
 
+/**
+ * This function gets a team_id and return all the players in the team
+ */
 async function getPlayersByTeam(team_id) {
   let player_ids_list = await getPlayerIdsByTeam(team_id);
   let players_info = await getPlayersInfo(player_ids_list);
   return players_info;
 }
 
+/**
+ * This function return players by player's name (optional filtering: player_position and group_name)
+ */
 async function getPlayersByName(player_name, player_pos, group_name) {
   let promises = [];
   promises.push(
@@ -67,6 +80,9 @@ async function getPlayersByName(player_name, player_pos, group_name) {
   return extractRelevantPlayerDataByName(players_info, player_pos, group_name)
 }
 
+/**
+ * This function extract the relevant players_info (and filtering by player's position and group_name if necessary)
+ */
 function extractRelevantPlayerDataByName(players, player_pos, group_name) {
   let players_data = players[0].data.data;
   
@@ -93,6 +109,9 @@ function extractRelevantPlayerDataByName(players, player_pos, group_name) {
   });
 }
 
+/**
+ * This function return the player personal page details by given a player_id
+ */
 async function getPlayerPersonalPageByID(player_id){
   let promises = [];
   promises.push(
@@ -107,11 +126,13 @@ async function getPlayerPersonalPageByID(player_id){
   return extractRelevantPlayerPageDataByID(players_info)
 }
 
+/**
+ * This function extract and return the relevant player personal page's details
+ */
 function extractRelevantPlayerPageDataByID(players) {
   const player_info = players[0].data.data;
   const {player_id ,fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight,  } = player_info;
   
-  // TODO: ask if player without team should be return
   if(player_info && player_info.team){
     return {
       player_id: player_id,
