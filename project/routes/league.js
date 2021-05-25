@@ -8,7 +8,6 @@ const DBUtils = require("./utils/DButils");
  */
 router.get("/getDetails", async (req, res, next) => {
   try {
-    console.log(req.session.lastQuery);
     let user_id = ""
     if (req.session && req.session.user_id) {
       await DBUtils.execQuery("SELECT user_id FROM users_test")

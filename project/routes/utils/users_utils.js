@@ -4,11 +4,6 @@ const axios = require("axios");
 async function markGameAsFavorite(user_id, game_id) {
   const currentDate = new Date();
   const timestamp = currentDate.getTime();  
-  const messages = {
-    msg1: "Wrong Game ID",
-    msg2: "Game date must be in the future",
-    msg3: "Game is already in the user's 'Favorite Games'",
-  } 
 
   try{
     // Client also will implemnt the date constraint (only future games)
