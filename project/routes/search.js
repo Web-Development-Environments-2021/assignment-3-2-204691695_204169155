@@ -4,7 +4,6 @@ const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 const team_utils = require("./utils/team_utils");
 
-///:playerName/:playerPosition/:groupName
 router.get("/players", async (req, res, next) => {
   try {
     const p_position = req.query.playerPosition || "";
@@ -14,6 +13,9 @@ router.get("/players", async (req, res, next) => {
       const players_details = await players_utils.getPlayersByName(
         req.query.playerName, p_position , g_name
       );
+      //saving last query to session
+      req.session.lastQuery = req.query;
+      req.session.lastQuery['type'] = "player";
       res.status(201).send(players_details);
     }
     else{
@@ -29,6 +31,9 @@ router.get("/teams/:teamName", async (req, res, next) => {
     const team_details = await team_utils.getTeamByName(
       req.params.teamName
     );
+    //saving last query to session
+    req.session.lastQuery = req.params;
+    req.session.lastQuery['type'] = "team";
     res.status(201).send(team_details);
   } catch (error) {
     next(error);

@@ -25,16 +25,5 @@ router.get("/page/:teamId", async (req, res, next) => {
   }
 });
 
-router.get("/:TeamName", async (req, res, next) => {
-  let players_details = [];
-  try {
-    const Team_details = await players_utils.getTeamByName(
-      req.params.TeamName
-    );
-    res.status(201).send(Team_details);
-  } catch (error) {
-    next(error);
-  }
-});
 
 module.exports = router;
