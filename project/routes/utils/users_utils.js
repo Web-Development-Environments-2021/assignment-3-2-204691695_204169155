@@ -1,17 +1,48 @@
 const DButils = require("./DButils");
 const axios = require("axios");
 
-async function markPlayerAsFavorite(user_id, player_id) {
-  await DButils.execQuery(
-    `insert into FavoritePlayers values ('${user_id}',${player_id})`
-  );
+async function markGameAsFavorite(user_id, game_id) {
+  const currentDate = new Date();
+  const timestamp = currentDate.getTime();  
+  const messages = {
+    msg1: "Wrong Game ID",
+    msg2: "Game date must be in the future",
+    msg3: "Game is already in the user's 'Favorite Games'",
+  } 
+
+  try{
+    // Client also will implemnt the date constraint (only future games)
+    const game = await DButils.execQuery(
+      `SELECT game_timestamp FROM dbo.Games WHERE game_id='${game_id}'`
+    );
+    
+    if(game[0].game_timestamp >= timestamp){
+      try{
+        await DButils.execQuery(
+          `INSERT INTO dbo.FavoriteGames VALUES ('${user_id}',${game_id})`
+        );
+      }
+      catch{
+        throw {status:400 , message: "Game is already in the user's 'Favorite Games'"};
+      }
+    }
+    else{
+      console.log("2");
+      throw {status: 400 , message: "Game date must be in the future"};
+    }    
+  } catch(err){
+      if(err.status !== 400)
+        throw {status:400 , message: "Wrong Game ID"};
+      else
+        throw err;
+  }
 }
 
-async function getFavoritePlayers(user_id) {
-  const player_ids = await DButils.execQuery(
-    `select player_id from FavoritePlayers where user_id='${user_id}'`
+async function getFavoriteGames(user_id) {
+  const games_ids = await DButils.execQuery(
+    `SELECT game_id FROM dbo.FavoriteGames WHERE user_id='${user_id}'`
   );
-  return player_ids;
+  return games_ids;
 }
 
 async function getCountries(){
@@ -19,6 +50,6 @@ async function getCountries(){
   return result;
 }
 
-exports.markPlayerAsFavorite = markPlayerAsFavorite;
-exports.getFavoritePlayers = getFavoritePlayers;
+exports.markGameAsFavorite = markGameAsFavorite;
+exports.getFavoriteGames = getFavoriteGames;
 exports.getCountries = getCountries;
