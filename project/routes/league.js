@@ -4,10 +4,11 @@ const league_utils = require("./utils/league_utils");
 const DBUtils = require("./utils/DButils");
 
 /**
- * Left column League page 
+ * This endpoint return the league details (main page of the website), if the user is logged-in return the favorite games also.
  */
 router.get("/getDetails", async (req, res, next) => {
   try {
+    // checks if the user is logged-in
     let user_id = ""
     if (req.session && req.session.user_id) {
       await DBUtils.execQuery("SELECT user_id FROM users_test")
@@ -16,8 +17,10 @@ router.get("/getDetails", async (req, res, next) => {
             user_id = req.session.user_id;
         });
     }
+
+    // get the league details
     const league_details = await league_utils.getLeagueDetails(user_id);
-    res.status(201).send(league_details);
+    res.status(200).send(league_details);
   } catch (error) {
     next(error);
   }

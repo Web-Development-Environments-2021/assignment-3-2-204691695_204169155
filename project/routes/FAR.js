@@ -5,31 +5,32 @@ const game_utils = require("./utils/games_utils");
 const far_utils = require("./utils/far_utils");
 
 /**
- * Authenticate all incoming requests by middleware
+ * Authenticate all incoming requests by middleware (just far user can pass it)
  */
 router.use(async function (req, res, next) {
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users_test")
       .then((users) => {
-          // username = asaf , password = 123456
-        if (users.find((x) => x.user_id === req.session.user_id  && req.session.user_id == '46F4271C-B3A4-464F-8F4C-869659E3C6A3')) {
+        // username = FAR , password = FAR123456
+        if (users.find((x) => x.user_id === req.session.user_id  && req.session.user_id == '5921CEE8-78A2-4EF4-AEF1-DDF92316AE48')) {
           req.user_id = req.session.user_id;
           next();
         }
+        else throw { status: 401 , message:"Unautorized"}
       })
       .catch((err) => next(err));
   } else {
-    res.sendStatus(401);
+    res.status(401).send("Unautorized");
   }
 });
 
 /**
- * FAR Page information 
+ * This endpoint return the FAR Page details 
  */
 router.get("/", async (req, res, next) => {
     try {
         const far_page_details = await far_utils.getFarPageDetails();
-        res.send(far_page_details);
+        res.status(200).send(far_page_details);
     } catch (error) {
       next(error);
     }
@@ -37,7 +38,7 @@ router.get("/", async (req, res, next) => {
 
 
 /**
- *  Adding new game to the system
+ *  This endpoint try to add a new game to the system
  */
 router.post("/addNewGame", async (req, res, next) => {
     try {
@@ -56,19 +57,3 @@ router.post("/addNewGame", async (req, res, next) => {
 });
 
 module.exports = router
-
-// ------------------- בונוס ----------------------
-// router.post("/addScore", async (req, res, next) => {
-//     try {
-      
-//     } catch (error) {
-//       next(error);
-//     }
-// });
-// router.post("/addLogEvent", async (req, res, next) => {
-//     try {
-      
-//     } catch (error) {
-//       next(error);
-//     }
-// });

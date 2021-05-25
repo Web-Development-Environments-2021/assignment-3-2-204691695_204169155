@@ -1,12 +1,13 @@
 const DButils = require("./DButils");
 const axios = require("axios");
 
+/**
+ * This function mark a game id as favorite to a specific user_id
+ */
 async function markGameAsFavorite(user_id, game_id) {
   const currentDate = new Date();
   const timestamp = currentDate.getTime();  
-
   try{
-    // Client also will implemnt the date constraint (only future games)
     const game = await DButils.execQuery(
       `SELECT game_timestamp FROM dbo.Games WHERE game_id='${game_id}'`
     );
@@ -32,6 +33,10 @@ async function markGameAsFavorite(user_id, game_id) {
   }
 }
 
+/**
+ * This function get all the favorite games of a user (by user id).
+ * @param {*} user_id - the user id to search by
+ */
 async function getFavoriteGames(user_id) {
   const games_ids = await DButils.execQuery(
     `SELECT game_id FROM dbo.FavoriteGames WHERE user_id='${user_id}'`
@@ -39,6 +44,9 @@ async function getFavoriteGames(user_id) {
   return games_ids;
 }
 
+/**
+ * This function return all autorized countries
+ */
 async function getCountries(){
   const result = await axios.get('https://restcountries.eu/rest/v2/all');
   return result;

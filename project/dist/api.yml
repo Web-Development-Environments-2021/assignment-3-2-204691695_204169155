@@ -25,7 +25,7 @@ tags:
   - name: Season
     description: get all games in the curent league
   - name: FAR
-    description: FAR page for CRUD requests - only the FAR can access this route
+    description: Football Association Representee(FAR) page for CRUD requests - only the FAR can access this route
 paths:
 #  -------- Auth Routes ----------
   /Register:
@@ -247,6 +247,52 @@ paths:
                 $ref: "#/components/schemas/TeamPreview"
         "403":
           description: playerId is not exists
+# -------- Season Routes ---------
+  /season:
+    get:
+      tags:
+        - Season
+      summary: Returns all the pass games and the future games of the current season in Superliga
+      responses:
+        "201":
+          description: data about the season future and past games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Season"
+# -------- FAR Routes ---------
+  /FAR:
+    get:
+      tags:
+        - FAR
+      summary: Returns all the games in the database
+      responses:
+        "200":
+          description: data about all the games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GamePreview"
+  /FAR/addNewGame:
+    post:
+      summary: adds new game to the system
+      tags:
+        - FAR
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddGame"
+      responses:
+        "201":
+          description: Game Added
+        "401":
+          description: Failed to insert game
 components:
   schemas:
 # -------- Auth schemas --------
@@ -502,3 +548,58 @@ components:
           description: team's logo
           format: URL
           example: https://cdn.sportmonks.com/images//soccer/teams/2/258.png
+# -------- Season schemas --------
+    Season:
+      type: object
+      properties:
+        past_games:
+          type: object
+          additionalProperties:
+            type: string
+          description: get the details of the next game in the league 
+          example:
+            game_id: 6
+            homeTeam_id: 85
+            visitorTeam_id: 293
+            game_date: '2021-04-16'
+            game_hour: '14:00:00'
+            game_timestamp: 1618570800000
+            referee: 15741
+            stadium: Nature Energy Park
+            score: 2-1
+            homeTeam_name: København
+            visitorTeam_name: Brøndby
+        future_games:
+          type: array
+          items:
+            type: object
+            $ref: "#/components/schemas/GamePreview"
+# -------- FAR schemas --------
+    AddGame:
+      type: object
+      properties:
+        homeTeam:
+          type: string
+          description: Home team name
+          example: Midtjylland
+        visitorTeam:
+          type: string
+          description: Visitor team name
+          example: Brøndby
+        date:
+          type: string
+          description: date of the future game
+          example: '2021-09-10'  
+        hour:
+          type: string
+          description: Hour of the future game
+          example: '13:00:00'
+        referee:
+          # the client will convert the name to matching ID
+          type: int
+          description: ID of the referee
+          example: 123 
+        stadium:
+          type: string
+          description: stadium of the future game to be placed in
+          example: Nature Energy Park     

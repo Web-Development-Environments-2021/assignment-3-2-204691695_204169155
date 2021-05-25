@@ -5,14 +5,20 @@ const games_utils = require("./games_utils");
 const LEAGUE_ID = 271; // Superliga
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
+/**
+ * This function return the league details to show in the league page (main website)
+ */
 async function getLeagueDetails(user_id) {
   let league_details = {};
-  league_details["left_column"] = await left_details();
+  league_details = await left_details();
   if(user_id != "")
-    league_details["right_column"] = await right_details(user_id);
+    league_details["favorite_games"] = await right_details(user_id);
   return league_details;
 }
 
+/**
+ * This function return the 'left_column' details (e.i. league name, season name, stage name and next game details)
+ */
 async function left_details() {
   // League name & Current season name
   const league = await axios.get(`${api_domain}/leagues/${LEAGUE_ID}`,{
@@ -36,6 +42,7 @@ async function left_details() {
   const timestamp = currentDate.getTime();   
   const future_games = await DButils.execQuery(`SELECT * FROM dbo.Games WHERE game_timestamp > '${timestamp}' `);
 
+  // sorting the games by date (increasing)
   future_games.sort(function(first, second) {
     return first.game_timestamp - second.game_timestamp;
   });
@@ -48,6 +55,9 @@ async function left_details() {
   };
 }
 
+/**
+ * This function return the 'right_column' details (e.i top 3 closest future games)
+ */
 async function right_details(user_id) {
   const games_ids = await user_utils.getFavoriteGames(user_id);
   let games_ids_array = [];

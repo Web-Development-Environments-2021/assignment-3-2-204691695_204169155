@@ -1,7 +1,9 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
-// Get Team by Name
+/**
+ * This function return team details given a teamName
+ */
 async function getTeamByName(team_name) {
   let teams = 
     await axios.get(`${api_domain}/teams/search/${team_name}`, {
@@ -12,6 +14,9 @@ async function getTeamByName(team_name) {
   return extractRelevantTeamDataByName(teams)
 }
 
+/**
+ * This function extract only the relevant data of a team
+ */
 function extractRelevantTeamDataByName(teams) {
   return teams.data.data.map((team_info) => {
     const { id, name, logo_path } = team_info;

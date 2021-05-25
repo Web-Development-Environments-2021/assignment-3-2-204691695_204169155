@@ -1,19 +1,19 @@
 var express = require("express");
 var router = express.Router();
 const DButils = require("../routes/utils/DButils");
-const utils= require("../routes/utils/users_utils");
 const bcrypt = require("bcryptjs");
 
+/**
+ * This endpoint get username and password and try register a new user to the system
+ */
 router.post("/Register", async (req, res, next) => {
-  try {
-    // parameters exists
-    // valid parameters
-    // username exists
-    //let countries= await utils.getCountries();
+  try {  
     const users = await DButils.execQuery("SELECT username FROM dbo.users_test");    
 
-    if (req.body.username && users.find((x) => x.username === req.body.username))
+    // checks if username exists
+    if (req.body.username && users.find((x) => x.username === req.body.username)){
       throw { status: 409, message: "Username taken" };
+    }
 
     //hash the password
     let hash_password = bcrypt.hashSync(
@@ -32,6 +32,9 @@ router.post("/Register", async (req, res, next) => {
   }
 });
 
+/**
+ * This endpoint get username and password and try Login a user to the system
+ */
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
@@ -52,6 +55,9 @@ router.post("/Login", async (req, res, next) => {
   }
 });
 
+/**
+ * This endpoint Logout the user from the system
+ */
 router.post("/Logout", function (req, res) {
   req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
   res.send({ success: true, message: "logout succeeded" });
