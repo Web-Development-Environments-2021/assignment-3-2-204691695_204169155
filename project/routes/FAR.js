@@ -16,6 +16,7 @@ router.use(async function (req, res, next) {
           req.user_id = req.session.user_id;
           next();
         }
+        else throw { status: 401 , message:"Unautorized"}
       })
       .catch((err) => next(err));
   } else {
