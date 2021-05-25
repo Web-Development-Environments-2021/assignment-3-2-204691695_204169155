@@ -11,6 +11,7 @@ router.use(async function (req, res, next) {
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users_test")
       .then((users) => {
+          // username = asaf , password = 123456
         if (users.find((x) => x.user_id === req.session.user_id  && req.session.user_id == '46F4271C-B3A4-464F-8F4C-869659E3C6A3')) {
           req.user_id = req.session.user_id;
           next();
