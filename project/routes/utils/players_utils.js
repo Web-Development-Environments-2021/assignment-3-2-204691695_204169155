@@ -93,7 +93,6 @@ function extractRelevantPlayerDataByName(players, player_pos, group_name) {
   });
 }
 
-
 async function getPlayerPersonalPageByID(player_id){
   let promises = [];
   promises.push(
