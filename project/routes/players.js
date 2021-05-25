@@ -2,6 +2,9 @@ var express = require("express");
 var router = express.Router();
 const players_utils = require("./utils/players_utils");
 
+/**
+ * This endpoint return the player's page by a given player_id.
+ */
 router.get("/page/:player_id", async (req, res, next) => {
   try {
     const players_details = await players_utils.getPlayerPersonalPageByID(

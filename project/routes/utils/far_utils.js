@@ -4,6 +4,9 @@ const DButils = require("./DButils");
 const LEAGUE_ID = 271; // Superliga
 const SEASON_ID = 17328; // 2020-2021
 
+/**
+ * This function return the all the league teams
+ */
 async function getLeagueTeams(){
     const season = await axios.get(`${api_domain}/seasons/${SEASON_ID}`, {
         params: {
@@ -20,6 +23,9 @@ async function getLeagueTeams(){
     return getTeamInfo(teams_set);
 }
 
+/**
+ * This function return teams info by getting a teams_ids list
+ */
 async function getTeamInfo(teams_ids_list) {
     let promises = [];
     teams_ids_list.forEach((id) =>{
@@ -36,6 +42,9 @@ async function getTeamInfo(teams_ids_list) {
     return teams_info;
 }
 
+/**
+ * This function extract and return relevant team data by given a teams info
+ */
 function extractRelevantTeamData(teams_info) {
     return teams_info.map((team_info) => {
       const { id, name} = team_info.data.data;
@@ -46,6 +55,9 @@ function extractRelevantTeamData(teams_info) {
     });
 }
 
+/**
+ * This function return the FAR page details (games, teams, stadiums)
+ */
 async function getFarPageDetails() {
     let league_games = await DButils.execQuery(`SELECT * FROM dbo.Games`);
     let teams_info = await getLeagueTeams();
