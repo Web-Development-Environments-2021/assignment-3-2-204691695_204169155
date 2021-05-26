@@ -91,8 +91,9 @@ function extractRelevantPlayerDataByName(players, player_pos, group_name) {
     players_data = players_data.filter((player_info) => player_info.position_id == player_pos)
 
   // Filter by group's name
-  if(group_name != "")
-    players_data = players_data.filter((player_info) => player_info.team && player_info.team.data.name === group_name)
+  if(group_name != ""){
+    players_data = players_data.filter((player_info) => player_info.team && player_info.team.data.name == group_name)
+  }
   
   // Extract relevant data 
   return players_data.map((player_info) => {

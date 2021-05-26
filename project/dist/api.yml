@@ -16,8 +16,6 @@ tags:
     description: Get Suprliga Details
   - name: Players
     description: get all relavent player information by ID
-  - name: Games
-    description: get all relevant the data of a given Game
   - name: Teams
     description: get all relavent team information by ID
   - name: Search
@@ -102,7 +100,6 @@ paths:
     get:
       tags:
         - Users
-        - Games
       summary: Return the favorite Games that were saved by user
       responses:
         "201":
@@ -119,7 +116,6 @@ paths:
       summary: save game in the favorites list of a user
       tags:
         - Users
-        - Games
       requestBody:
         content:
           application/json:
@@ -188,7 +184,6 @@ paths:
       description:  'Search for player by name , can filter by : team name , player position'
       tags:
         - Search
-        - Players
       parameters:
       - name: playerName
         in: query
@@ -206,7 +201,7 @@ paths:
         schema:
           type: integer
           example: 1
-      - name: groupName
+      - name: teamName
         in: query
         required: false
         style: form
@@ -229,7 +224,6 @@ paths:
       description: get all relavnt teams that respond to the given name
       tags:
         - Search
-        - Teams
       parameters:
         - in: path
           name: teamName
@@ -266,7 +260,7 @@ paths:
     get:
       tags:
         - FAR
-      summary: Returns all the games in the database
+      summary: Returns all details that related to FAR page
       responses:
         "200":
           description: data about all the games
