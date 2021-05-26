@@ -104,7 +104,6 @@ paths:
         - Users
         - Games
       summary: Return the favorite Games that were saved by user
-      parameters:
       responses:
         "201":
           description: data about the user's favorites Games returned
@@ -127,7 +126,7 @@ paths:
             schema:
               type: object
               properties:
-                playerId:
+                game_id:
                   type: string
                   description: game id which the user saved
                   example: 1
@@ -205,7 +204,7 @@ paths:
         style: form
         explode: true
         schema:
-          type: int
+          type: integer
           example: 1
       - name: groupName
         in: query
@@ -224,7 +223,7 @@ paths:
                 $ref: "#/components/schemas/PlayerPreview"
         "400":
           description: You must enter a player name
-  /search/teams/:teamName:
+  /search/teams/{teamName}:
     get:
       summary: get details about team by name
       description: get all relavnt teams that respond to the given name
@@ -385,7 +384,7 @@ components:
       type: object
       properties:
         player_id:
-          type: int
+          type: integer
           description: player's id
           example: 84587
         name:
@@ -409,7 +408,7 @@ components:
       type: object
       properties:
         player_id:
-          type: int
+          type: integer
           description: player's id
           example: 84587
         name:
@@ -458,15 +457,15 @@ components:
       type: object
       properties:
         game_id:
-          type: int
+          type: integer
           description: Game id
           example: 42
         homeTeam_id:
-          type: int
+          type: integer
           description: Home team ID
           example: 85
         visitorTeam_id:
-          type: int
+          type: integer
           description: Visitor team ID
           example: 7466
         game_date:
@@ -478,11 +477,11 @@ components:
           description: Game hour
           example: '14:00:00'
         game_timestamp:
-          type: float
+          type: integer
           description: game timestamp from 1970
           example: 1625133600000
         referee:
-          type: int
+          type: integer
           description: referee ID
           example: 1564
         stadium:
@@ -536,7 +535,7 @@ components:
       type: object
       properties:
         team_id:
-          type: int
+          type: integer
           description: team's id
           example: 258
         name:
@@ -596,10 +595,15 @@ components:
           example: '13:00:00'
         referee:
           # the client will convert the name to matching ID
-          type: int
+          type: integer
           description: ID of the referee
           example: 123 
         stadium:
           type: string
           description: stadium of the future game to be placed in
-          example: Nature Energy Park     
+          example: Nature Energy Park
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      name: session
+      in: cookie 
