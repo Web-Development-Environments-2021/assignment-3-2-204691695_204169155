@@ -1,2 +1,1 @@
-INSERT INTO dbo.Logs (game_id,game_date,minutes,description) VALUES (123,'10-10-11',30,'shtok')
-
+SELECT * from dbo.Games WHERE game_timestamp > 1622044499727 AND score IS NULL

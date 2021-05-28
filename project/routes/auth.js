@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs");
  */
 router.post("/Register", async (req, res, next) => {
   try {  
-    const users = await DButils.execQuery("SELECT username FROM dbo.users_test");    
+    const users = await DButils.execQuery("SELECT username FROM dbo.users");    
 
     // checks if username exists
     if (req.body.username && users.find((x) => x.username === req.body.username)){
@@ -24,7 +24,7 @@ router.post("/Register", async (req, res, next) => {
 
     // add the new username
     await DButils.execQuery(
-      `INSERT INTO dbo.users_test (username, password) VALUES ('${req.body.username}', '${hash_password}')`
+      `INSERT INTO dbo.users (username, password) VALUES ('${req.body.username}', '${hash_password}')`
     );
     res.status(201).send("user created");
   } catch (error) {
@@ -38,7 +38,7 @@ router.post("/Register", async (req, res, next) => {
 router.post("/Login", async (req, res, next) => {
   try {
     // check that username exists
-    const user = (await DButils.execQuery(`SELECT * FROM dbo.users_test WHERE username = '${req.body.username}'`))[0];
+    const user = (await DButils.execQuery(`SELECT * FROM dbo.users WHERE username = '${req.body.username}'`))[0];
 
     // check that username exists & the password is correct
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
