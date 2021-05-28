@@ -35,5 +35,5 @@ Enjoy!
 <p>
  After setting up the Server you can just go to http://127.0.0.1:3000/api and explore the functionality
  <br>
- API docs is located at: https://app.swaggerhub.com/apis-docs/Tom_n_Asi/FAMS_API/1.0.2
+ API docs is located at: https://app.swaggerhub.com/apis-docs/Tom_n_Asi/FAMS_API/1.0.0
 </p>
