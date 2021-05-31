@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { compare } = require("bcryptjs");
 const DButils = require("./DButils");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
@@ -98,7 +99,6 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
   try{
     // check validation of the insert game (stadium empty and teams available)
     same_date_games.forEach(game => {
-      console.log("in");
       if(game.stadium == stadium)
         throw {
           status: 401,
@@ -158,9 +158,53 @@ async function getGamesInfo(games_ids_array) {
   return favorite_game_info;
 }
 
+// ----------------------------- Insert Score --------------------------------
+/**
+ * This function try to insert a score to game (validate parameters and availabilty first).
+ * Client must validate the score input as valid sting
+ */
+ async function checkAndUpdateScore(game_id, score){
+  const curr_timestamp = new Date().getTime();
+  // FAR can update score only to past games with no score given
+  const old_games_to_update = await DButils.execQuery(
+    `SELECT * from dbo.Games WHERE game_timestamp < '${curr_timestamp}' AND score IS NULL AND game_id='${game_id}'`
+  );
+  try{
+    if(old_games_to_update.length != 0 ){
+      // UPDATE by game_id - represent to client only games with valid ID's
+      await DButils.execQuery(
+         `UPDATE dbo.Games SET score='${score}' WHERE game_id = '${game_id}'`
+      ); 
+    }
+    else throw { status: 412 , message:"There are no games to update in the system, all score's are set" }
+    return true;
+  }
+  catch(e){
+    throw e;
+  }
+}
+// ----------------------------- Insert Event Log --------------------------------
+/**
+ * This function try to insert a Event Log to game (validate parameters and availabilty first).
+ * Client must validate the input of date,min and description
+ */
+ async function InsertEventLog(game_id ,date ,hour ,min ,description){
+
+  try{
+    const updateLog = await DButils.execQuery(`INSERT INTO dbo.Logs (game_id,game_date,hour,minutes,description) 
+                  VALUES('${game_id}','${date}','${hour}','${min}','${description}') `);
+    return true;
+  }
+  catch(e){
+    throw e;
+  }
+}
+
 exports.getPastGames = getPastGames;
 exports.getFutureGames = getFutureGames;
 exports.getAllFutureGames = getAllFutureGames;
 exports.getAllPastGames = getAllPastGames;
 exports.checkAndInsertGame = checkAndInsertGame;
 exports.getGamesInfo = getGamesInfo;
+exports.checkAndUpdateScore = checkAndUpdateScore;
+exports.InsertEventLog = InsertEventLog;

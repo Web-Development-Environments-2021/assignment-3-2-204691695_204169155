@@ -9,7 +9,7 @@ const far_utils = require("./utils/far_utils");
  */
 router.use(async function (req, res, next) {
   if (req.session && req.session.user_id) {
-    DButils.execQuery("SELECT user_id FROM users_test")
+    DButils.execQuery("SELECT user_id FROM users")
       .then((users) => {
         // username = FAR , password = FAR123456
         if (users.find((x) => x.user_id === req.session.user_id  && req.session.user_id == '5921CEE8-78A2-4EF4-AEF1-DDF92316AE48')) {
@@ -55,5 +55,41 @@ router.post("/addNewGame", async (req, res, next) => {
       next(error);
     }
 });
-
+/**
+ *  This endpoint try to update a score of a single game
+ */
+router.post("/addScore", async (req, res, next) => {
+  try {
+      const auth_event = await game_utils.checkAndUpdateScore(req.body.game_id,req.body.score);
+      if(auth_event){
+          res.status(201).send("Score added")
+      }
+      else { throw {
+          status: 401,
+          message: "Failed to insert score",
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+/**
+ *  This endpoint Inseret a Event Log to a valid game ID
+ */
+router.post("/addEventLog", async (req, res, next) => {
+  try {
+    console.log(req.body);
+      const auth_score = await game_utils.InsertEventLog(req.body.game_id, req.body.date, req.body.hour, req.body.minutes, req.body.description);
+      if(auth_score){
+          res.status(201).send("Event Log added")
+      }
+      else { throw {
+          status: 401,
+          message: "Failed to insert Event Log",
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router

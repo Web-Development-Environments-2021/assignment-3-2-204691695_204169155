@@ -16,8 +16,6 @@ tags:
     description: Get Suprliga Details
   - name: Players
     description: get all relavent player information by ID
-  - name: Games
-    description: get all relevant the data of a given Game
   - name: Teams
     description: get all relavent team information by ID
   - name: Search
@@ -102,7 +100,6 @@ paths:
     get:
       tags:
         - Users
-        - Games
       summary: Return the favorite Games that were saved by user
       responses:
         "201":
@@ -119,7 +116,6 @@ paths:
       summary: save game in the favorites list of a user
       tags:
         - Users
-        - Games
       requestBody:
         content:
           application/json:
@@ -188,7 +184,6 @@ paths:
       description:  'Search for player by name , can filter by : team name , player position'
       tags:
         - Search
-        - Players
       parameters:
       - name: playerName
         in: query
@@ -206,7 +201,7 @@ paths:
         schema:
           type: integer
           example: 1
-      - name: groupName
+      - name: teamName
         in: query
         required: false
         style: form
@@ -229,7 +224,6 @@ paths:
       description: get all relavnt teams that respond to the given name
       tags:
         - Search
-        - Teams
       parameters:
         - in: path
           name: teamName
@@ -266,7 +260,7 @@ paths:
     get:
       tags:
         - FAR
-      summary: Returns all the games in the database
+      summary: Returns all details that related to FAR page
       responses:
         "200":
           description: data about all the games
@@ -292,6 +286,49 @@ paths:
           description: Game Added
         "401":
           description: Failed to insert game
+  /FAR/addScore:
+    post:
+      summary: Update score of a given game in the system, updates only past games with no score
+      tags:
+        - FAR
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                game_id:
+                  type: integer
+                  description: game id which the user intend to update his score
+                  example: 1
+                score:
+                  type: string
+                  description: score of the game
+                  example: '1-2'
+      responses:
+        "201":
+          description: Score Added
+        "401":
+          description: Failed to insert score
+        "412":
+          description: There are no games to update in the system, all score's are set
+  /FAR/addEventLog:
+    post:
+      summary: Add a event log to a single game in the system
+      tags:
+        - FAR
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventLog"
+      responses:
+        "201":
+          description: Event Log Added
+        "401":
+          description: Failed to insert Event Log
 components:
   schemas:
 # -------- Auth schemas --------
@@ -602,6 +639,38 @@ components:
           type: string
           description: stadium of the future game to be placed in
           example: Nature Energy Park
+    EventLog:
+      type: object
+      properties:
+        game_id:
+          type: integer
+          description: game id which the user intend to update his score
+          example: 1
+        date:
+          type: string
+          description: date of the game
+          example: '2021-05-20'
+        hour:
+          type: string
+          description: hour of the event
+          example: '13:30:00'
+        minutes:
+          type: string
+          description: minute of the event 
+          example: '40'
+        description:
+          type: string 
+          description: score of the game
+          example: Goal
+          enum:
+          - Goal
+          - Foul
+          - Yellow Card
+          - Red Card
+          - Injury
+          - Exchange
+          - Offside
+# -------- Security schemas --------
   securitySchemes:
     cookieAuth:
       type: apiKey

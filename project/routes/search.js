@@ -10,7 +10,7 @@ router.get("/players", async (req, res, next) => {
   try {
     // define dedault position and teamName
     const p_position = req.query.playerPosition || "";
-    const t_name = req.query.teanName || "";
+    const t_name = req.query.teamName || "";
     
     if(req.query.playerName){
       // search the player by the params
