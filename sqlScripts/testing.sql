@@ -1,1 +1,1 @@
-SELECT * from dbo.Games WHERE game_timestamp > 1622044499727 AND score IS NULL
+SELECT * FROM [dbo].Logs

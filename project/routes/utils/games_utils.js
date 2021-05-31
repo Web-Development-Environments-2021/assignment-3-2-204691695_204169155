@@ -196,7 +196,7 @@ async function getGamesInfo(games_ids_array) {
     return true;
   }
   catch(e){
-    throw e;
+    throw { status: 400 , message:"Invalid game_id - Failed to inert Event Log" }
   }
 }
 
