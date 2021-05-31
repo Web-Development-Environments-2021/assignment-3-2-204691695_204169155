@@ -13,6 +13,7 @@
 <p>
 For the server side, we developed an API and worked with the site <a href="https://www.sportmonks.com/soccer-api/">sportsmonks</a> to get information about football games,players etc .,
 We also used azure cloud SQL for our DB and worked with Swagger UI for conveninet API integration.
+In addition to the mandatory requirements, we implemented additional bonus requirements in league management such as add event log to the matche's Events and add result(addScore) to an old match.
 </p>
 
 <a name="Installation"></a>
