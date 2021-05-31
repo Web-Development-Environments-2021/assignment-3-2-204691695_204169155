@@ -327,6 +327,8 @@ paths:
       responses:
         "201":
           description: Event Log Added
+        "400":
+          description: Invalid game_id - Failed to inert Event Log
         "401":
           description: Failed to insert Event Log
 components:
