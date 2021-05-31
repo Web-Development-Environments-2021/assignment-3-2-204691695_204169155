@@ -58,7 +58,7 @@ router.post("/addNewGame", async (req, res, next) => {
 /**
  *  This endpoint try to update a score of a single game
  */
-router.post("/addScore", async (req, res, next) => {
+router.put("/addScore", async (req, res, next) => {
   try {
       const auth_event = await game_utils.checkAndUpdateScore(req.body.game_id,req.body.score);
       if(auth_event){

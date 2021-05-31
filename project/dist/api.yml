@@ -287,7 +287,7 @@ paths:
         "401":
           description: Failed to insert game
   /FAR/addScore:
-    post:
+    put:
       summary: Update score of a given game in the system, updates only past games with no score
       tags:
         - FAR
@@ -644,7 +644,7 @@ components:
       properties:
         game_id:
           type: integer
-          description: game id which the user intend to update his score
+          description: game id which the user choose to add a event
           example: 1
         date:
           type: string
@@ -660,7 +660,7 @@ components:
           example: '40'
         description:
           type: string 
-          description: score of the game
+          description: type of the event, must be one
           example: Goal
           enum:
           - Goal
