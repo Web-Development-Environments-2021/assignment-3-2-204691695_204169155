@@ -14,7 +14,6 @@ async function getLeagueTeams(){
             api_token: process.env.api_token,
         },
     });
-
     const teams_set = new Set();
     season.data.data.fixtures.data.forEach(season_data => {
         teams_set.add(season_data.localteam_id);
@@ -63,7 +62,8 @@ async function getFarPageDetails() {
     let teams_info = await getLeagueTeams();
     let league_teams = await extractRelevantTeamData(teams_info);
     let stadiums = await DButils.execQuery(`SELECT stadium_id,name,city FROM dbo.Stadiums`);
-    const far_info = {games: league_games, teams: league_teams, stadiums: stadiums};
+    let referees = await DButils.execQuery(`SELECT * FROM dbo.Referees`);
+    const far_info = {games: league_games, teams: league_teams, stadiums: stadiums , referees : referees };
     return far_info;
 }
 

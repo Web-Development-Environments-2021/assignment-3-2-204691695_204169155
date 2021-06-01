@@ -263,13 +263,13 @@ paths:
       summary: Returns all details that related to FAR page
       responses:
         "200":
-          description: data about all the games
+          description: all the data relevant to league managment by FAR
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/GamePreview"
+                  $ref: "#/components/schemas/FAR_Page"
   /FAR/addNewGame:
     post:
       summary: adds new game to the system
@@ -672,6 +672,48 @@ components:
           - Injury
           - Exchange
           - Offside
+    FAR_Page:
+      type: object
+      properties:
+        games:
+          $ref: '#/components/schemas/GamePreview'
+        teams:
+          type: object
+          properties:
+            team_id:
+              type: integer
+              description: team id
+              example: 211
+            team_name:
+              type: string
+              description: team name
+              example: Horsens
+        stadiums:
+          type: object
+          properties:
+            stadium_id:
+              type: integer
+              description: stadium id
+              example: 3
+            name:
+              type: string
+              description: stadium name
+              example: CASA Arena
+            city:
+              type: string
+              description: stadium city
+              example: Horsens
+        referees:
+          type: object
+          properties:
+            referee_id:
+              type: integer
+              description: referee id
+              example: 14652
+            name:
+              type: string
+              description: referee name
+              example: Angelos Evangelou
 # -------- Security schemas --------
   securitySchemes:
     cookieAuth:
