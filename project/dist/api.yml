@@ -415,9 +415,9 @@ components:
             type: object
             $ref: "#/components/schemas/GamePreview"
         FavoriteGames:
-          type: string
           description: if there is a logged user with favorite games at most 3 of them will be presented here
-          example: same as next_game
+          type: object
+          $ref: "#/components/schemas/GamePreview"
 # -------- Player schemas --------
     PlayerPreview:
       type: object
