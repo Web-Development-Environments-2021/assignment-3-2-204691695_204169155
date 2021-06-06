@@ -46,14 +46,3 @@ Enjoy!
  <br>
     password : FAR123456
 </p>
-
-<a name="env"></a>
-# .env variables
-* COOKIE_SECRET=0GBlJZ9EKBt2Zbi2flRPvztczCewBxXK
-* azure_userName=tomasaf
-* azure_password=AsafTom1!
-* azure_server_name=tomasaf.database.windows.net
-* azure_admin=tomasaf
-* azure_DB_name=TomAsaf_DB
-* bcrypt_saltRounds=13
-* api_token=U1f7wJk12pklG5EVPrAlm74wYtyI8Umvh8zrYeKiA5rcOCoYmMr6cEMMl7HI
