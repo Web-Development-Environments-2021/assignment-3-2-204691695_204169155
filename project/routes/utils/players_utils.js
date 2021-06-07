@@ -86,6 +86,10 @@ async function getPlayersByName(player_name, player_pos, group_name) {
 function extractRelevantPlayerDataByName(players, player_pos, group_name) {
   let players_data = players[0].data.data;
   
+  players_data = players_data.filter(function (elem) {
+    return elem != null;
+  });
+
   // Filter by player's position
   if(player_pos != "")
     players_data = players_data.filter((player_info) => player_info.position_id == player_pos)
@@ -96,15 +100,23 @@ function extractRelevantPlayerDataByName(players, player_pos, group_name) {
   }
   
   // Extract relevant data 
-  return players_data.filter((p) => p!=null && p!=undefined).map((player_info) => {
+  return players_data.map((player_info) => {
     const { player_id, fullname, image_path, position_id } = player_info;
-        if(player_info && player_info.team){
+    var team_name = "";
+    try{
+      team_name = player_info.team.data.name
+    }
+    catch{
+      team_name = "not define";
+    }
+    
+        if(player_info){
       return {
         player_id: player_id,
         name: fullname,
         image: image_path,
-        position: position_id || "not define",
-        team_name: player_info.team.data.name || "not define"
+        position: position_id? position_id.toString() : "unknown",
+        team_name: team_name,
       }; 
     }  
   });

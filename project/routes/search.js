@@ -18,6 +18,11 @@ router.get("/players", async (req, res, next) => {
         req.query.playerName, p_position , t_name
       );
       
+      players_details.forEach(p => {
+        if(!p){
+          console.log("search.js");
+        }
+      });
       // Saving logged-in user last query to session      
       req.session.lastQuery = req.query;
       req.session.lastQuery['type'] = "player";
