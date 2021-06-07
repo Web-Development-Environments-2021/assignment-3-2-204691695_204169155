@@ -96,15 +96,15 @@ function extractRelevantPlayerDataByName(players, player_pos, group_name) {
   }
   
   // Extract relevant data 
-  return players_data.map((player_info) => {
+  return players_data.filter((p) => p!=null && p!=undefined).map((player_info) => {
     const { player_id, fullname, image_path, position_id } = player_info;
         if(player_info && player_info.team){
       return {
         player_id: player_id,
         name: fullname,
         image: image_path,
-        position: position_id,
-        team_name: player_info.team.data.name
+        position: position_id || "not define",
+        team_name: player_info.team.data.name || "not define"
       }; 
     }  
   });

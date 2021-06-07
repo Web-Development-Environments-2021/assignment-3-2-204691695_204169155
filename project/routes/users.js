@@ -38,7 +38,7 @@ router.post("/favoriteGames", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+}); 
 
 /**
  * This endpoint returns the favorites games that were saved by the logged-in user
