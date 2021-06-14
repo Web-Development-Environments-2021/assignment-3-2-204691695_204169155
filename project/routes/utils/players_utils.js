@@ -96,7 +96,7 @@ function extractRelevantPlayerDataByName(players, player_pos, group_name) {
 
   // Filter by group's name
   if(group_name != ""){
-    players_data = players_data.filter((player_info) => player_info.team && player_info.team.data.name == group_name)
+    players_data = players_data.filter((player_info) => player_info.team && (player_info.team.data.name.toString().toLowerCase()).includes(group_name.toLowerCase()))
   }
   
   // Extract relevant data 
