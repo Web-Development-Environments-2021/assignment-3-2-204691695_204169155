@@ -136,6 +136,8 @@ async function getPlayerPersonalPageByID(player_id){
     })
   )
   let players_info = await Promise.all(promises);
+  console.log("player info: ");
+  console.log(players_info[0].data.data);
   return extractRelevantPlayerPageDataByID(players_info)
 }
 
@@ -144,15 +146,15 @@ async function getPlayerPersonalPageByID(player_id){
  */
 function extractRelevantPlayerPageDataByID(players) {
   const player_info = players[0].data.data;
-  const {player_id ,fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight,  } = player_info;
+  const {player_id ,fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, height, weight } = player_info;
   
-  if(player_info && player_info.team){
+  if(player_info){ 
     return {
       player_id: player_id,
       name: fullname,
       image: image_path,
       position: position_id,
-      team_name: player_info.team.data.name,
+      team_name: player_info.team? player_info.team.data.name : "unkown",
       common_name: common_name,
       nationality: nationality,
       birthdate: birthdate,
