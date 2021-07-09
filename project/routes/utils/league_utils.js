@@ -11,8 +11,10 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 async function getLeagueDetails(user_id) {
   let league_details = {};
   league_details = await left_details();
-  if(user_id != "")
+  if(user_id != ""){
+    console.log(user_id);
     league_details["favorite_games"] = await right_details(user_id);
+  }
   return league_details;
 }
 
@@ -30,12 +32,15 @@ async function left_details() {
   );
 
   // Current stage name
-  const stage = await axios.get(`${api_domain}/stages/${league.data.data.current_stage_id}`,{
-      params: {
-        api_token: process.env.api_token,
-      },
-    }
-  );
+  let stage = "not exist";
+  if(league.data.data.current_stage_id!=null){
+    const stage = await axios.get(`${api_domain}/stages/${league.data.data.current_stage_id}`,{
+        params: {
+          api_token: process.env.api_token,
+        },
+      }
+    );
+  }
 
   // Next game
   const currentDate = new Date();
@@ -50,7 +55,7 @@ async function left_details() {
   return {
     league_name: league.data.data.name,
     current_season_name: league.data.data.season.data.name,
-    current_stage_name: stage.data.data.name,
+    current_stage_name: stage=="not exist"? stage: stage.data.data.name,
     next_game: future_games[0] || "No future game in the league",
   };
 }
@@ -64,6 +69,7 @@ async function right_details(user_id) {
   games_ids.map((element) => games_ids_array.push(element.game_id)); //extracting the players ids into array
   const fav_games = await games_utils.getGamesInfo(games_ids_array);
   const top3favGame = fav_games.filter((name,idx) => idx<3);
+  console.log(top3favGame);
   return top3favGame;
 }
 

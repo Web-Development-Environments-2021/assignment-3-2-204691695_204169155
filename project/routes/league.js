@@ -11,7 +11,7 @@ router.get("/getDetails", async (req, res, next) => {
     // checks if the user is logged-in
     let user_id = ""
     if (req.session && req.session.user_id) {
-      await DBUtils.execQuery("SELECT user_id FROM users_test")
+      await DBUtils.execQuery("SELECT user_id FROM users")
         .then((users) => {
           if (users.find((x) => x.user_id === req.session.user_id)) 
             user_id = req.session.user_id;
