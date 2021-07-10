@@ -117,10 +117,11 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
     });
 
     // Inserting the game
+    console.log()
     const time_stamp = new Date(date+"T"+hour).getTime();
     const db_a = await DButils.execQuery(
       `INSERT INTO dbo.Games (homeTeam_id, visitorTeam_id, game_date, game_hour, game_timestamp, referee, stadium) 
-        VALUES ('${homeTeam}', '${visitorTeam}', '${date}', '${hour}', '${time_stamp}' ,'${referee}', '${stadium}')`
+        VALUES (${homeTeam}, ${visitorTeam}, '${date}', '${hour}', '${time_stamp}' ,${referee}, '${stadium}')`
     );
     return true;
   }

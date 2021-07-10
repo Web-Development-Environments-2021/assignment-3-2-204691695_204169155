@@ -24,7 +24,7 @@ router.post("/Register", async (req, res, next) => {
 
     // add the new username
     await DButils.execQuery(
-      `INSERT INTO dbo.users (username, password) VALUES ('${req.body.username}', '${hash_password}')`
+      `INSERT INTO dbo.users (username, password,first_name,last_name,country,email,profile_pic) VALUES ('${req.body.username}', '${hash_password}','${req.body.first_name}','${req.body.last_name}','${req.body.country}','${req.body.email}','${req.body.profile_pic}')`
     );
     res.status(201).send("user created");
   } catch (error) {
@@ -49,7 +49,7 @@ router.post("/Login", async (req, res, next) => {
     req.session.user_id = user.user_id;
 
     // return cookie
-    res.status(200).send("login succeeded");
+    res.status(200).send(user.profile_pic);
   } catch (error) {
     next(error);
   }

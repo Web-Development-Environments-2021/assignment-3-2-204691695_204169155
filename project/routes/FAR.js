@@ -35,6 +35,17 @@ router.get("/", async (req, res, next) => {
       next(error);
     }
 });
+/**
+ * This endpoint returns all the matches in the system
+ */
+router.get("/allMatches", async (req, res, next) => {
+  try {
+    const league_games = await DButils.execQuery(`SELECT * FROM dbo.Games`);
+    res.status(200).send(league_games);
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 /**
@@ -59,7 +70,7 @@ router.post("/addNewGame", async (req, res, next) => {
  *  This endpoint try to update a score of a single game
  */
 router.put("/addScore", async (req, res, next) => {
-  try {
+  try {c
       const auth_event = await game_utils.checkAndUpdateScore(req.body.game_id,req.body.score);
       if(auth_event){
           res.status(201).send("Score added")
