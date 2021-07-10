@@ -53,7 +53,7 @@ router.get("/allMatches", async (req, res, next) => {
  */
 router.post("/addNewGame", async (req, res, next) => {
     try {
-        const auth_game = await game_utils.checkAndInsertGame(req.body.homeTeam, req.body.visitorTeam, req.body.date, req.body.hour, req.body.referee, req.body.stadium);
+        const auth_game = await game_utils.checkAndInsertGame(req.body.homeTeam, req.body.visitorTeam, req.body.date, req.body.hour, req.body.referee, req.body.stadium,req.body.homeTeam_name,req.body.visitorTeam_name);
         if(auth_game){
             res.status(201).send("Game added")
         }
@@ -70,7 +70,7 @@ router.post("/addNewGame", async (req, res, next) => {
  *  This endpoint try to update a score of a single game
  */
 router.put("/addScore", async (req, res, next) => {
-  try {c
+  try {
       const auth_event = await game_utils.checkAndUpdateScore(req.body.game_id,req.body.score);
       if(auth_event){
           res.status(201).send("Score added")

@@ -101,7 +101,7 @@ async function getPastGames(team_id) {
 /**
  * This function try to insert a new game to the system (validate parameters and availabilty first).
  */
-async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, stadium){
+async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, stadium,homeTeam_name,visitorTeam_name){
   const same_date_games = await DButils.execQuery(
     `SELECT * FROM dbo.Games WHERE game_date='${date}' and game_hour='${hour}'`
   );
@@ -130,8 +130,8 @@ async function checkAndInsertGame(homeTeam, visitorTeam, date, hour, referee, st
     console.log()
     const time_stamp = new Date(date+"T"+hour).getTime();
     const db_a = await DButils.execQuery(
-      `INSERT INTO dbo.Games (homeTeam_id, visitorTeam_id, game_date, game_hour, game_timestamp, referee, stadium) 
-        VALUES (${homeTeam}, ${visitorTeam}, '${date}', '${hour}', '${time_stamp}' ,${referee}, '${stadium}')`
+      `INSERT INTO dbo.Games (homeTeam_id, visitorTeam_id, game_date, game_hour, game_timestamp, referee, stadium,homeTeam_name,visitorTeam_name) 
+        VALUES (${homeTeam}, ${visitorTeam}, '${date}', '${hour}', '${time_stamp}' ,${referee}, '${stadium}','${homeTeam_name}','${visitorTeam_name}')`
     );
     return true;
   }
