@@ -51,6 +51,7 @@ async function getFutureGames(team_id) {
  * This function get all the past games
  */
 async function getAllPastGames(){
+  let data ={games:"",eventLogs:""};
   const currentDate = new Date();
   const timestamp = currentDate.getTime();   
   const past_games = await DButils.execQuery(
@@ -59,7 +60,16 @@ async function getAllPastGames(){
   past_games.sort(function(first, second) {
     return first.game_timestamp - second.game_timestamp;
   });
-  return past_games
+  let logs = [];
+  past_games.forEach(async (g)=> {
+    const log = await getEventLog(g.game_id);
+    if(log.length>0){
+      logs.push(log);
+    }
+  })
+  data.games = past_games;
+  data.eventLogs = logs;
+  return data;
 }
 
 /**
@@ -198,6 +208,16 @@ async function getGamesInfo(games_ids_array) {
   catch(e){
     throw { status: 400 , message:"Invalid game_id - Failed to inert Event Log" }
   }
+}
+
+async function getEventLog(game_id){
+  try{
+    const gameLog = await DButils.execQuery(`SELECT * From dbo.Logs WHERE game_id = '${game_id}'`);
+    return gameLog;
+  }
+  catch(e){
+    throw { status: 400 , message:"Invalid game_id - Failed to select Event Log" }
+  };
 }
 
 exports.getPastGames = getPastGames;
